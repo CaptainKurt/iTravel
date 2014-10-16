@@ -8,9 +8,11 @@
 
 import UIKit
 
-class TripsViewController: UITableViewController {
+class TripsViewController: UITableViewController, UINavigationBarDelegate, UISearchDisplayDelegate, UISearchBarDelegate {
 
     let tripManager = TripManager.sharedTripManager
+    
+    var filteredTrips : [Trip]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +21,13 @@ class TripsViewController: UITableViewController {
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+         self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,17 +44,34 @@ class TripsViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        return tripManager.trips.count
+        
+        if tableView == searchDisplayController!.searchResultsTableView {
+            if filteredTrips == nil {
+                return 0
+            }
+            else {
+                return filteredTrips!.count
+            }
+        }
+        else {
+            return tripManager.trips.count
+        }
     }
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("TripsTableViewCell", forIndexPath: indexPath) as UITableViewCell
 
-        // Configure the cell...
-        let trip = tripManager.trips[indexPath.row]
+        var trip: Trip
+        
+        if tableView == searchDisplayController!.searchResultsTableView {
+            trip = filteredTrips![indexPath.row]
+        }
+        else {
+            trip = tripManager.trips[indexPath.row]
+        }
+        
         
         cell.textLabel?.text = trip.title
         cell.detailTextLabel?.text = trip.description
@@ -64,32 +89,34 @@ class TripsViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // Override to support editing the table view.
-    override func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
+            tripManager.trips.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
-    */
+    
 
-    /*
+    
     // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView!, moveRowAtIndexPath fromIndexPath: NSIndexPath!, toIndexPath: NSIndexPath!) {
-
+    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
+        
+        let tripToMove = tripManager.trips[fromIndexPath.row]
+        tripManager.trips.removeAtIndex(fromIndexPath.row)
+        tripManager.trips.insert(tripToMove, atIndex: toIndexPath.row)
     }
-    */
 
-    /*
+
+    
     // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView!, canMoveRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return NO if you do not want the item to be re-orderable.
         return true
     }
-    */
+    
 
     
     // MARK: - Navigation
@@ -99,11 +126,29 @@ class TripsViewController: UITableViewController {
         if segue.identifier == "tripDetailSegue" {
             let destinationViewController = segue.destinationViewController as TripDetailViewController
             
+            if searchDisplayController!.active {
+                if let selectedRow = searchDisplayController!.searchResultsTableView.indexPathForSelectedRow()?.row {
+                    destinationViewController.trip = filteredTrips?[selectedRow]
+                }
+            }
+            else {
+                
+                let trip = tripManager.trips[tableView.indexPathForSelectedRow()!.row]
+                destinationViewController.trip = trip
+            }
+            
             let trip = tripManager.trips[tableView.indexPathForSelectedRow()!.row]
             
             destinationViewController.trip = trip
         }
+        
     }
     
+    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchString searchString: String!) -> Bool {
+        
+        let filteredTrips = tripManager.filteredTripsForSearchText(searchString)
+        
+        return true
+    }
 
 }

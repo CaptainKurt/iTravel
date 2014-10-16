@@ -70,14 +70,21 @@ class TripDetailViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        
+        if segue.identifier == "editTripSegue" {
+            
+            let navigationController = segue.destinationViewController as UINavigationController
+            let editTripViewController = navigationController.topViewController as EditTripViewController
+            
+            editTripViewController.trip = trip
+            
+        }
     }
-    */
+
 
 }
