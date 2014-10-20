@@ -19,7 +19,11 @@ class TripDetailViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
         tripImageView.image = trip.image
         tripLocationLabel.text = trip.location
         tripDescriptionTextView.text = trip.description
@@ -86,5 +90,15 @@ class TripDetailViewController: UITableViewController {
         }
     }
 
+    @IBAction func tripImageViewTap(sender: UITapGestureRecognizer)
+    {
+        
+        if tripImageView.image != nil {
+            var activityController = UIActivityViewController(activityItems: [tripImageView.image!], applicationActivities: nil)
+            
+            presentViewController(activityController, animated: true, completion: nil)
+        }
+        
+    }
 
 }

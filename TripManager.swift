@@ -39,14 +39,14 @@ class TripManager {
             location: "Iceland",
             description: "Iceland is a Nordic island country marking the juncture between the North Atlantic and the Arctic Ocean. Iceland is volcanically and geologically active. Icelandic culture is founded upon the nation's Norse heritage. Most Icelanders are descendants of Norse and Gaelic settlers.",
             image: UIImage(named: "iceland"))
-        trips.append(icelandTrip)
+        trips.append(icelandTrip2)
         
         let berlinTrip2 = Trip(
             title: "City of the Bear2",
             location: "Berlin",
             description: "Berlin is the capital city of Germany and one of the 16 states of Germany. Berlin is a world city of culture, politics, media, and science. Its urban setting and historical legacy have made it a popular location for international film productions. A bear appears in the coat of arms of the city.",
             image: UIImage(named: "berlin"))
-        trips.append(berlinTrip)
+        trips.append(berlinTrip2)
     }
     
     func filteredTripsForSearchText(searchText: String) -> [Trip] {

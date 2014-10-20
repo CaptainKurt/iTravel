@@ -10,7 +10,7 @@ import UIKit
 
 import MessageUI
 
-class EditTripViewController: UITableViewController {
+class EditTripViewController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var trip: Trip!
 
@@ -41,11 +41,48 @@ class EditTripViewController: UITableViewController {
             
             TripManager.sharedTripManager.trips.append(trip)
         }
+        else {
+            trip.title = tripTitleTextField.text
+            trip.location = tripLocationTextField.text
+            trip.description = tripDescriptionTextView.text
+            trip.image = tripImageView.image
+        }
         
         dismissViewControllerAnimated(true, completion: nil);
     }
     
-    @IBAction func handleImageTap(sender: UITapGestureRecognizer) {        
+    @IBAction func handleImageTap(sender: UITapGestureRecognizer)
+    {
+        if UIImagePickerController.isSourceTypeAvailable(.SavedPhotosAlbum) {
+            
+            var imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .SavedPhotosAlbum
+            imagePicker.allowsEditing = false
+            imagePicker.delegate = self
+            
+            presentViewController(imagePicker, animated: true, completion: nil)
+            
+        }
+        
+        if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
+            
+            var imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .PhotoLibrary
+            imagePicker.allowsEditing = false
+            imagePicker.delegate = self
+            
+            presentViewController(imagePicker, animated: true, completion: nil)
+            
+        }
     }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        
+        tripImageView.image = info[UIImagePickerControllerOriginalImage]? as? UIImage
+        
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
     
 }

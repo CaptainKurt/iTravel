@@ -38,14 +38,13 @@ class TripsViewController: UITableViewController, UINavigationBarDelegate, UISea
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
         return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if tableView == searchDisplayController!.searchResultsTableView {
+        if tableView == searchDisplayController!.searchResultsTableView
+        {
             if filteredTrips == nil {
                 return 0
             }
@@ -61,7 +60,7 @@ class TripsViewController: UITableViewController, UINavigationBarDelegate, UISea
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("TripsTableViewCell", forIndexPath: indexPath) as UITableViewCell
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("TripsTableViewCell", forIndexPath: indexPath) as TripCell
 
         var trip: Trip
         
@@ -73,9 +72,9 @@ class TripsViewController: UITableViewController, UINavigationBarDelegate, UISea
         }
         
         
-        cell.textLabel?.text = trip.title
-        cell.detailTextLabel?.text = trip.description
-        cell.imageView?.image = trip.image
+        cell.tripTitleLabel?.text = trip.title
+        cell.tripLocationLabel?.text = trip.description
+        cell.tripImageView?.image = trip.image
 
         return cell
     }
@@ -117,6 +116,10 @@ class TripsViewController: UITableViewController, UINavigationBarDelegate, UISea
         return true
     }
     
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 120
+    }
+    
 
     
     // MARK: - Navigation
@@ -146,7 +149,7 @@ class TripsViewController: UITableViewController, UINavigationBarDelegate, UISea
     
     func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchString searchString: String!) -> Bool {
         
-        let filteredTrips = tripManager.filteredTripsForSearchText(searchString)
+        filteredTrips = tripManager.filteredTripsForSearchText(searchString)
         
         return true
     }
